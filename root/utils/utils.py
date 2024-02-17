@@ -24,4 +24,4 @@ def success(data: Any = None) -> dict:
 
 
 def slug_generate(key: str = 'slug') -> str:
-    slugify(f'{key}-{datetime.now(tz=timezone("Asia/Calcutta")).timestamp()}')
+    return slugify(f'{key}-{datetime.now(tz=timezone("Asia/Calcutta")).timestamp()}')
