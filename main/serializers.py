@@ -156,3 +156,9 @@ class BookListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Books
         fields = '__all__'
+
+
+class AuthorsListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Authors
+        fields = '__all__'
