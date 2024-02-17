@@ -8,11 +8,13 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
+from author.models import Authors
 from books.models import Books
 
 from .models import Reviews
-from .serializers import (BookListSerializer, LoginResponseSerializer,
-                          LoginSerializer, ReviewSerializer, SignupSerializer)
+from .serializers import (AuthorsListSerializer, BookListSerializer,
+                          LoginResponseSerializer, LoginSerializer,
+                          ReviewSerializer, SignupSerializer)
 
 # Create your views here.
 
@@ -48,5 +50,11 @@ class ReviewsAPI(ModelViewSet):
 
 class BooksListAPI(ListAPIView):
     permission_classes = (IsAuthenticated,)
-    queryset = Books.objects.all()
+    queryset = Books.objects.all().order_by('-average_rating')
     serializer_class = BookListSerializer
+
+
+class AuthorsListAPI(ListAPIView):
+    permission_classes = (IsAuthenticated,)
+    queryset = Authors.objects.all().order_by('-average_rating')
+    serializer_class = AuthorsListSerializer
