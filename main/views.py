@@ -58,3 +58,18 @@ class AuthorsListAPI(ListAPIView):
     permission_classes = (IsAuthenticated,)
     queryset = Authors.objects.all().order_by('-average_rating')
     serializer_class = AuthorsListSerializer
+
+
+class AuthorReviewsAPI(ListAPIView):
+    serializer_class = ReviewSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self) -> QuerySet:
+        if (author := Authors.objects.filter(slug=self.kwargs.get('slug'))).exists():
+            author = author.first()
+            return Reviews.objects.filter(
+                content_type__app_label='author',
+                content_type__model='authors',
+                object_id=author.id
+            )
+        return Reviews.objects.none()
