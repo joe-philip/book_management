@@ -1,12 +1,16 @@
 from django.contrib.auth.models import User
+from django.db.models import QuerySet
 from rest_framework.authtoken.models import Token
 from rest_framework.generics import CreateAPIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.viewsets import ModelViewSet
 
+from .models import Reviews
 from .serializers import (LoginResponseSerializer, LoginSerializer,
-                          SignupSerializer)
+                          ReviewSerializer, SignupSerializer)
 
 # Create your views here.
 
@@ -30,3 +34,11 @@ class LoginAPI(APIView):
                 user, context={'token': user_token.key}
             ).data
         )
+
+
+class ReviewsAPI(ModelViewSet):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = ReviewSerializer
+
+    def get_queryset(self) -> QuerySet[Reviews]:
+        Reviews.objects.filter(user=self.request.user)
