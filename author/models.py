@@ -2,8 +2,9 @@ from django.db import models
 
 from root.utils.fields import CommonFields
 
-
 # Create your models here.
+
+
 class Authors(CommonFields):
     name = models.CharField()
 
