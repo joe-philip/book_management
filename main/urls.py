@@ -11,5 +11,6 @@ urlpatterns = [
     path('signup', views.SignupAPI.as_view()),
     path('login', views.LoginAPI.as_view()),
     path('books', views.BooksListAPI.as_view()),
-    path('authors', views.AuthorsListAPI.as_view())
+    path('authors', views.AuthorsListAPI.as_view()),
+    path('author_reviews/<slug:slug>', views.AuthorReviewsAPI.as_view())
 ]+router.urls
