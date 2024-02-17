@@ -3,7 +3,13 @@ from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import (CommonPasswordValidator,
                                                      MinimumLengthValidator,
                                                      NumericPasswordValidator)
+from django.contrib.contenttypes.models import ContentType
 from rest_framework import serializers
+
+from author.models import Authors
+from books.models import Books
+
+from .models import Reviews
 
 
 class SignupSerializer(serializers.ModelSerializer):
@@ -68,3 +74,74 @@ class LoginResponseSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         exclude = ('password',)
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+    content_type_choices = serializers.ChoiceField(
+        choices=Reviews.ContentTypeChoices.choices, write_only=True
+    )
+
+    def validate_rating(self, value: int) -> int:
+        if value in range(6):
+            return value
+        raise serializers.ValidationError('Invalid rating')
+
+    def validate(self, attrs):
+        if attrs.get('content_type_choices') == 1:
+            if not Authors.objects.filter(id=attrs.get('object_id')).exists():
+                raise serializers.ValidationError(
+                    {'object_id': ['Object not found']}
+                )
+            previous_review = Reviews.objects.filter(
+                content_type__app_label='author',
+                content_type__model='authors',
+                object_id=attrs.get('object_id'),
+                user=self.context.get('request').user
+            )
+            if self.instance:
+                previous_review = previous_review.exclude(id=self.instance.id)
+            if previous_review.exists():
+                raise serializers.ValidationError('Review already submitted')
+        if attrs.get('content_type_choices') == 2:
+            if not Books.objects.filter(id=attrs.get('object_id')).exists():
+                raise serializers.ValidationError(
+                    {'object_id': ['Object not found']}
+                )
+            previous_review = Reviews.objects.filter(
+                content_type__app_label='books',
+                content_type__model='books',
+                object_id=attrs.get('object_id'),
+                user=self.context.get('request').user
+            )
+            if self.instance:
+                previous_review = previous_review.exclude(id=self.instance.id)
+            if previous_review.exists():
+                raise serializers.ValidationError('Review already submitted')
+        return super().validate(attrs)
+
+    class Meta:
+        model = Reviews
+        fields = '__all__'
+        read_only_fields = (
+            'slug', 'created_at', 'updated_at', 'object', 'content_type', 'user'
+        )
+
+    def save(self, **kwargs):
+        content_type_choices = self.validated_data.pop('content_type_choices')
+        kwargs['user'] = self.context.get('request').user
+        match content_type_choices:
+            case 1:
+                kwargs['object'] = Authors.objects.get(
+                    id=self.validated_data.get('object_id')
+                )
+                kwargs['content_type'] = ContentType.objects.get(
+                    app_label='author', model='authors'
+                )
+            case 2:
+                kwargs['object'] = Books.objects.get(
+                    id=self.validated_data.get('object_id')
+                )
+                kwargs['content_type'] = ContentType.objects.get(
+                    app_label='books', model='books'
+                )
+        return super().save(**kwargs)
