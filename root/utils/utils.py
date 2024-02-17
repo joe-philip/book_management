@@ -1,4 +1,8 @@
+from datetime import datetime
 from typing import Any
+
+from django.utils.text import slugify
+from pytz import timezone
 
 
 def fail(error: str) -> dict:
@@ -17,3 +21,7 @@ def success(data: Any = None) -> dict:
     if data is not None:
         response_data['data'] = data
     return response_data
+
+
+def slug_generate(key: str = 'slug') -> str:
+    slugify(f'{key}-{datetime.now(tz=timezone("Asia/Calcutta")).timestamp()}')
