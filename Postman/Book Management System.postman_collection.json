@@ -145,6 +145,27 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Author Reviews",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "/author_reviews/slug-170816227364909",
+							"path": [
+								"author_reviews",
+								"slug-170816227364909"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
