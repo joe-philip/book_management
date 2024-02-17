@@ -145,3 +145,14 @@ class ReviewSerializer(serializers.ModelSerializer):
                     app_label='books', model='books'
                 )
         return super().save(**kwargs)
+
+
+class BookListSerializer(serializers.ModelSerializer):
+    average_rating = serializers.SerializerMethodField()
+
+    def get_average_rating(self, instance: Books) -> float:
+        return instance.average_rating
+
+    class Meta:
+        model = Books
+        fields = '__all__'
