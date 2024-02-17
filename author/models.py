@@ -7,19 +7,7 @@ from root.utils.fields import CommonFields
 
 class Authors(CommonFields):
     name = models.CharField()
-
-    @property
-    def average_rating(self) -> float:
-        from main.models import Reviews
-
-        ratings = Reviews.objects.filter(
-            content_type__app_label='author',
-            content_type__model='authors',
-            object_id=self.id
-        ).values_list('rating', flat=True)
-        if ratings.count() != 0:
-            return sum(ratings)/ratings.count()
-        return 0
+    average_rating = models.FloatField(default=0)
 
     class Meta:
         db_table = 'author'
