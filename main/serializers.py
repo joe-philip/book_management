@@ -1,3 +1,4 @@
+from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
@@ -33,3 +34,27 @@ class SignupSerializer(serializers.ModelSerializer):
         user.set_password(password)
         user.save()
         return user
+
+
+class LoginSerializer(serializers.Serializer):
+    username = serializers.SlugRelatedField(
+        queryset=User.objects.all(), slug_field='username',
+        error_messages={'does_not_exist': 'User not found'}
+    )
+    password = serializers.CharField()
+
+    def validate(self, attrs):
+        if authenticate(self.context.get('request'), username=attrs.get('username').username, password=attrs.get('password')):
+            return super().validate(attrs)
+        raise serializers.ValidationError('Invalid credentials')
+
+
+class LoginResponseSerializer(serializers.ModelSerializer):
+    auth_token = serializers.SerializerMethodField()
+
+    def get_auth_token(self, instance: User) -> dict | None:
+        return self.context.get('token')
+
+    class Meta:
+        model = User
+        exclude = ('password',)
