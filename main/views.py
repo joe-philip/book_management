@@ -1,16 +1,18 @@
 from django.contrib.auth.models import User
 from django.db.models import QuerySet
 from rest_framework.authtoken.models import Token
-from rest_framework.generics import CreateAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
+from books.models import Books
+
 from .models import Reviews
-from .serializers import (LoginResponseSerializer, LoginSerializer,
-                          ReviewSerializer, SignupSerializer)
+from .serializers import (BookListSerializer, LoginResponseSerializer,
+                          LoginSerializer, ReviewSerializer, SignupSerializer)
 
 # Create your views here.
 
@@ -42,3 +44,9 @@ class ReviewsAPI(ModelViewSet):
 
     def get_queryset(self) -> QuerySet[Reviews]:
         Reviews.objects.filter(user=self.request.user)
+
+
+class BooksListAPI(ListAPIView):
+    permission_classes = (IsAuthenticated,)
+    queryset = Books.objects.all()
+    serializer_class = BookListSerializer
