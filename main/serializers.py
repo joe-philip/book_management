@@ -1,5 +1,8 @@
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
+from django.contrib.auth.password_validation import (CommonPasswordValidator,
+                                                     MinimumLengthValidator,
+                                                     NumericPasswordValidator)
 from rest_framework import serializers
 
 
@@ -14,6 +17,13 @@ class SignupSerializer(serializers.ModelSerializer):
         return value
 
     def validate_username(self, value: str) -> str: return value.lower()
+
+    def validate_password(self, value: str) -> str:
+        validators = (
+            CommonPasswordValidator(), MinimumLengthValidator(), NumericPasswordValidator()
+        )
+        tuple(map(lambda x: x.validate(value), validators))
+        return value
 
     class Meta:
         model = User
