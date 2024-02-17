@@ -1,0 +1,397 @@
+{
+	"info": {
+		"_postman_id": "18232e3f-a69e-40b4-a8a6-f0dc1e058375",
+		"name": "Book Management System",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18485727"
+	},
+	"item": [
+		{
+			"name": "Main",
+			"item": [
+				{
+					"name": "Signup",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"first_name\": \"{{$randomFirstName}}\",\n    \"last_name\": \"{{$randomLastName}}\",\n    \"username\": \"{{$randomUserName}}\",\n    \"password\": \"Password*1\",\n    \"email\": \"{{$randomEmail}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "/signup",
+							"path": [
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.status == \"OK\"){",
+									"    pm.environment.set(",
+									"        'authToken',",
+									"        pm.response.json().data.auth_token",
+									"    )",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"password\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "/login",
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Authors",
+			"item": [
+				{
+					"name": "Management",
+					"item": [
+						{
+							"name": "Create",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token {{authToken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"{{$randomFullName}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "/author/",
+									"path": [
+										"author",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "List",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token {{authToken}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "/author/",
+									"path": [
+										"author",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Retrieve",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token {{authToken}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "/author/slug-1708162198274886",
+									"path": [
+										"author",
+										"slug-1708162198274886"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token {{authToken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"{{$randomFullName}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "/author/slug-1708162198274886/",
+									"path": [
+										"author",
+										"slug-1708162198274886",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token {{authToken}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "/author/slug-1708162198274886/",
+									"path": [
+										"author",
+										"slug-1708162198274886",
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Books",
+			"item": [
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token {{authToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"{{$randomWord}}\",\n    \"author\": 10\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "/books/",
+							"path": [
+								"books",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "/books/",
+							"path": [
+								"books",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "/books/slug-170816367095185",
+							"path": [
+								"books",
+								"slug-170816367095185"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token {{authToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"{{$randomWord}}\",\n    \"author\": 10\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "/books/slug-170816367095185/",
+							"path": [
+								"books",
+								"slug-170816367095185",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "/books/slug-170816367095185/",
+							"path": [
+								"books",
+								"slug-170816367095185",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Review",
+			"item": [
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token {{authToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content_type_choices\": 1,\n    \"object_id\": 1,\n    \"rating\": 10,\n    \"review\": \"{{$randomLoremParagraph}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "/review/",
+							"path": [
+								"review",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"pm.request.url = pm.environment.get('baseURL')+pm.request.url"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
